@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+
+        <RootNamespace>mooresmaster.Tests</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DefineConstants>TRACE
+            ENABLE_MOORESMASTER_GENERATOR
+        </DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DefineConstants>TRACE
+            ENABLE_MOORESMASTER_GENERATOR
+        </DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.1"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2"/>
+        <PackageReference Include="Unity3D.UnityEngine" Version="2018.3.5.1"/>
+        <PackageReference Include="xunit" Version="2.4.2"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CommandForgeGenerator\CommandForgeGenerator.csproj" />
+        <ProjectReference Include="..\mooresmaster.Generator\mooresmaster.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="TestYaml\SwitchPathTestSchema.yml"/>
+        <None Update="SwitchPathTest\SwitchPathTestSchema.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SwitchPathTest\SwitchPathThrowTestSchema.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="OptionalTests\OptionalTestSchema1.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="OptionalTests\OptionalTestSchema2.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SwitchPathTests\SwitchPathTestSchema.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="SwitchPathTests\SwitchPathThrowTestSchema.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="SwitchPathTests\RelativeSwitchPathTestSchema.yml"/>
+        <None Remove="SwitchPathTest\AbsoluteSwitchPathTestSchema.yml"/>
+        <AdditionalFiles Include="SwitchPathTests\AbsoluteSwitchPathTestSchema.yml"/>
+        <None Remove="OptionalTests\OptionalTestSchema.yml"/>
+        <AdditionalFiles Include="OptionalTests\OptionalTestSchema.yml"/>
+    </ItemGroup>
+
+
+</Project>

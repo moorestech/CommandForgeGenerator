@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <DefineConstants>ENABLE_MOORESMASTER_GENERATOR</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CommandForgeGenerator\CommandForgeGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="schema\ref\blockConnectInfo.yml"/>
+        <AdditionalFiles Include="schema\ref\inventoryConnects.yml"/>
+        <AdditionalFiles Include="schema\ref\gearConnects.yml"/>
+        <AdditionalFiles Include="schema\ref\inventoryConnects.yml"/>
+        <AdditionalFiles Include="schema\ref\mineSettings.yml"/>
+        
+        <AdditionalFiles Include="schema\blocks.yml"/>
+        <AdditionalFiles Include="schema\challenges.yml"/>
+        <AdditionalFiles Include="schema\craftRecipes.yml"/>
+        <AdditionalFiles Include="schema\items.yml"/>
+        <AdditionalFiles Include="schema\machineRecipes.yml"/>
+        <AdditionalFiles Include="schema\mapObjects.yml"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="Unity3D.UnityEngine" Version="2018.3.5.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="TestMod\blocks.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="TestMod\challenges.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="TestMod\craftRecipes.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="TestMod\items.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="TestMod\machineRecipes.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="TestMod\mapObjects.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
