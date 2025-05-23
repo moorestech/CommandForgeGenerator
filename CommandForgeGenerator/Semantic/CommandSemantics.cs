@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using CommandForgeGenerator.Generator.Json;
+using CommandForgeGenerator.Generator.Semantic;
 using Microsoft.CodeAnalysis;
 
-namespace CommandForgeGenerator.Generator.Semantic;
+namespace CommandForgeEditor.Generator.Semantic;
 
 public class CommandSemantics
 {

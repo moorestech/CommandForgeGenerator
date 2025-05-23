@@ -3,17 +3,17 @@
 A set of three projects that illustrates Roslyn source generators. Enjoy this template to learn from and modify source generators for your own needs.
 
 ## Content
-### mooresmaster
+### CommandForgeEditor
 A .NET Standard project with implementations of sample source generators.
 **You must build this project to see the result (generated code) in the IDE.**
 
 - [SampleSourceGenerator.cs](SampleSourceGenerator.cs): A source generator that creates C# classes based on a text file (in this case, Domain Driven Design ubiquitous language registry).
 - [SampleIncrementalSourceGenerator.cs](SampleIncrementalSourceGenerator.cs): A source generator that creates a custom report based on class properties. The target class should be annotated with the `Generators.ReportAttribute` attribute.
 
-### mooresmaster.Sample
-A project that references source generators. Note the parameters of `ProjectReference` in [mooresmaster.Sample.csproj](../mooresmaster.Sample/mooresmaster.Sample.csproj), they make sure that the project is referenced as a set of source generators. 
+### CommandForgeEditor.Sample
+A project that references source generators. Note the parameters of `ProjectReference` in [CommandForgeEditor.Sample.csproj](../CommandForgeEditor.Sample/CommandForgeEditor.Sample.csproj), they make sure that the project is referenced as a set of source generators. 
 
-### mooresmaster.Tests
+### CommandForgeEditor.Tests
 Unit tests for source generators. The easiest way to develop language-related features is to start with unit tests.
 
 ## How To?

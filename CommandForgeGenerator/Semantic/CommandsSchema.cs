@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CommandForgeGenerator.Generator.Semantic;
+namespace CommandForgeEditor.Generator.Semantic;
 
 public class CommandsSchema
 {
