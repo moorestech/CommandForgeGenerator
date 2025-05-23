@@ -145,4 +145,40 @@ public static class CodeGenerator
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
+    
+    public static string GenerateLoaderCode()
+    {
+        return $$$"""
+                  namespace CommandForgeGenerator.Command
+                  {
+                      public class CommandForgeLoader
+                      {
+                          public static List<ICommandForgeCommand> LoadCommands(global::Newtonsoft.Json.Linq.JToken json)
+                          {
+                              var results = new List<ICommandForgeCommand>();
+                              var commandsJson = json["commands"];
+                              foreach (var commandJson in commandsJson)
+                              {
+                                  var id = (int)commandJson["id"];
+                                  var type = (string)commandJson["type"];
+                                  
+                                  var command = CreateCommand(id, type, commandJson);
+                                  results.Add(command);
+                              }
+                              return results;
+                          }
+                          
+                          public static ICommandForgeCommand CreateCommand(int id, string type, global::Newtonsoft.Json.Linq.JToken commandJson)
+                          {
+                              return type switch
+                              {
+                                  TextCommand.Type => TextCommand.Create(id, commandJson),
+                                  
+                                  _ => throw new System.Exception($"Unknown command type: {type}")
+                              };
+                          }
+                      }
+                  }
+                  """;
+    }
 }
