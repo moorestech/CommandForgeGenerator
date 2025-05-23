@@ -2,22 +2,22 @@ using System.Collections.Generic;
 
 namespace CommandForgeEditor.Generator.Semantic;
 
-public class CommandsSchema
+public class CommandsSemantics
 {
-    public readonly List<CommandSchema> Commands;
+    public readonly List<CommandSemantics> Commands;
 
-    public CommandsSchema(List<CommandSchema> commands)
+    public CommandsSemantics(List<CommandSemantics> commands)
     {
         Commands = commands;
     }
 }
 
-public class CommandSchema
+public class CommandSemantics
 {
     public readonly string Name;
     public readonly List<CommandProperty> Properties;
 
-    public CommandSchema(string name, List<CommandProperty> properties)
+    public CommandSemantics(string name, List<CommandProperty> properties)
     {
         Name = name;
         Properties = properties;
@@ -27,6 +27,8 @@ public class CommandSchema
 public class CommandProperty{
     public readonly string Name;
     public readonly CommandPropertyType Type;
+    
+    public string CodeProperty => Name.ToUpper();
 
     public CommandProperty(CommandPropertyType type, string name)
     {
@@ -41,6 +43,5 @@ public enum CommandPropertyType{
     Int,
     Float,
     Bool,
-    Enum,
     CommandId,
 }

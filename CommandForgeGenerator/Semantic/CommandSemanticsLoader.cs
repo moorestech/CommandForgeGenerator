@@ -7,9 +7,9 @@ using Microsoft.CodeAnalysis;
 
 namespace CommandForgeEditor.Generator.Semantic;
 
-public class CommandSemantics
+public class CommandSemanticsLoader
 {
-    public CommandsSchema GetCommandSemantics(ImmutableArray<AdditionalText> additionalTexts){
+    public static CommandsSemantics GetCommandSemantics(ImmutableArray<AdditionalText> additionalTexts){
         
         if (additionalTexts.Length == 0)
         {
@@ -36,11 +36,11 @@ public class CommandSemantics
         }
         
         
-        CommandsSchema ParseCommandsSchema(JsonObject root)
+        CommandsSemantics ParseCommandsSchema(JsonObject root)
         {
             var commandsJson = root["commands"] as JsonArray ?? throw new Exception("commands 配列が見つかりません。");
             
-            var commands = new List<CommandSchema>();
+            var commands = new List<CommandSemantics>();
             
             foreach (var commandsJsonNode in commandsJson.Nodes)
             {
@@ -72,7 +72,7 @@ public class CommandSemantics
                         "integer" => CommandPropertyType.Int,
                         "number" => CommandPropertyType.Float,
                         "boolean" => CommandPropertyType.Bool,
-                        "enum" => CommandPropertyType.Enum,
+                        "enum" => CommandPropertyType.String,
                         "command" => CommandPropertyType.CommandId,
                         _ => throw new Exception($"未知の property type \"{typeStr}\"")
                     };
@@ -80,10 +80,10 @@ public class CommandSemantics
                     properties.Add(new CommandProperty(mappedType, propName));
                 }
                 
-                commands.Add(new CommandSchema(commandName, properties));
+                commands.Add(new CommandSemantics(commandName, properties));
             }
             
-            return new CommandsSchema(commands);
+            return new CommandsSemantics(commands);
         }
         
         #endregion

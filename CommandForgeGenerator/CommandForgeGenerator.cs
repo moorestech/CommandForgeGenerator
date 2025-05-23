@@ -2,16 +2,18 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using Microsoft.CodeAnalysis;
-using CommandForgeGenerator.Generator.CodeGenerate;
+using CommandForgeEditor.Generator.CodeGenerate;
+using CommandForgeEditor.Generator.LoaderGenerate;
+using CommandForgeEditor.Generator.Semantic;
+using CommandForgeGenerator.Generator;
 using CommandForgeGenerator.Generator.Definitions;
 using CommandForgeGenerator.Generator.Json;
 using CommandForgeGenerator.Generator.JsonSchema;
-using CommandForgeGenerator.Generator.LoaderGenerate;
 using CommandForgeGenerator.Generator.NameResolve;
 using CommandForgeGenerator.Generator.Semantic;
+using Microsoft.CodeAnalysis;
 
-namespace CommandForgeGenerator.Generator;
+namespace CommandForgeEditor.Generator;
 
 [Generator(LanguageNames.CSharp)]
 public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
@@ -25,6 +27,10 @@ public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
 
     private void Emit(SourceProductionContext context, (Compilation compilation, ImmutableArray<AdditionalText> additionalTexts) input)
     {
+        
+        var commandsSchema = CommandSemanticsLoader.GetCommandSemantics(input.additionalTexts);
+        
+        
         var (schemas, schemaTable) = ParseAdditionalText(input.additionalTexts);
         var semantics = SemanticsGenerator.Generate(schemas.Select(schema => schema.Schema).ToImmutableArray(), schemaTable);
         var nameTable = NameResolver.Resolve(semantics, schemaTable);
