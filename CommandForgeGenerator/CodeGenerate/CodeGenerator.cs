@@ -23,9 +23,8 @@ public static class CodeGenerator
         
         foreach (var command in commandsSemantics.Commands)
         {
-            var className = CommandNameToClassName(command.Name);
-            var code = Generate(className, command);
-            files.Add(new CodeFile(className + ".g.cs", code));
+            var code = Generate(command.ClassName, command);
+            files.Add(new CodeFile(command.ClassName + ".g.cs", code));
         }
         
         files.Add(new CodeFile("CommandForgeLoader.g.cs", GenerateLoaderCode(commandsSemantics)));
@@ -204,16 +203,10 @@ public static class CodeGenerator
         
         foreach (var command in commands)
         {
-            var className = CommandNameToClassName(command.Name);
+            var className = command.ClassName;
             switchCases.AppendLine($"{className}.Type => {className}.Create(id, commandJson),");
         }
         
         return switchCases.ToString();
-    }
-    
-    
-    private static string CommandNameToClassName(string commandName)
-    {
-        return commandName + "Command";
     }
 }

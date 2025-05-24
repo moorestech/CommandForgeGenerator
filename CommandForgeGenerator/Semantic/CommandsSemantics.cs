@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CommandForgeGenerator.Generator.LoaderGenerate;
 
 namespace CommandForgeGenerator.Generator.Semantic;
 
@@ -15,6 +16,7 @@ public class CommandsSemantics
 public class CommandSemantics
 {
     public readonly string Name;
+    public string ClassName => Name.CommandNameToClassName();
     public readonly List<CommandProperty> Properties;
 
     public CommandSemantics(string name, List<CommandProperty> properties)

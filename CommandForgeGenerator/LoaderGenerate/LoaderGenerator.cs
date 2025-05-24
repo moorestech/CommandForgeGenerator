@@ -432,6 +432,11 @@ public static class LoaderGenerator
         return firstLine ? indent : "" + code.Replace("\n", $"\n{indent}");
     }
     
+    public static string CommandNameToClassName(this string commandName)
+    {
+        return commandName.CompareTo(0) + "Command";
+    }
+    
     
     /// <summary>
     /// 指定した n 番目の文字を大文字に変換します。
