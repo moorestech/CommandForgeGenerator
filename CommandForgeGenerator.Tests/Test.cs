@@ -2,6 +2,7 @@ using System.IO;
 using CommandForgeGenerator.Generator.CodeGenerate;
 using CommandForgeGenerator.Generator.Json;
 using CommandForgeGenerator.Generator.Semantic;
+using UnityEngine;
 using Xunit;
 
 namespace CommandForgeGenerator.Tests;
@@ -62,13 +63,7 @@ public class Test
         var commandsSchema = CommandSemanticsLoader.GetCommandSemantics(yaml);
         var codeFiles = CodeGenerator.Generate(commandsSchema);
         
-        // 生成されたコードをこのファイルと同じディレクトリに出力
-        foreach (var codeFile in codeFiles)
-        {
-          var basePath = "/Users/katsumi.sato/RiderProjects/CommandForgeGenerator/CommandForgeGenerator.Tests";
-          var filePath = Path.Combine(basePath, codeFile.FileName);
-            File.WriteAllText(filePath, codeFile.Code);
-        }
+        Assert.Equal(16, codeFiles.Count);
         
         #region Internal
         
