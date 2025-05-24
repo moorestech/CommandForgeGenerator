@@ -1,16 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
 using CommandForgeGenerator.Generator.CodeGenerate;
-using CommandForgeGenerator.Generator.LoaderGenerate;
-using CommandForgeGenerator.Generator.Semantic;
-using CommandForgeGenerator.Generator;
-using CommandForgeGenerator.Generator.Definitions;
-using CommandForgeGenerator.Generator.Json;
-using CommandForgeGenerator.Generator.JsonSchema;
-using CommandForgeGenerator.Generator.NameResolve;
 using CommandForgeGenerator.Generator.Semantic;
 using Microsoft.CodeAnalysis;
 
@@ -41,23 +31,6 @@ public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
         {
             context.AddSource("Error.g.cs", GetErrorClass(e));
         }
-    }
-
-    private (ImmutableArray<SchemaFile> files, SchemaTable schemaTable) ParseAdditionalText(ImmutableArray<AdditionalText> additionalTexts)
-    {
-        var schemas = new List<SchemaFile>();
-        var schemaTable = new SchemaTable();
-
-        foreach (var additionalText in additionalTexts.Where(a => Path.GetExtension(a.Path) == ".yml"))
-        {
-            var yamlText = additionalText.GetText()!.ToString();
-            var jsonText = Yaml.ToJson(yamlText);
-            var json = JsonParser.Parse(JsonTokenizer.GetTokens(jsonText));
-            var schema = JsonSchemaParser.ParseSchema((json as JsonObject)!, schemaTable);
-            schemas.Add(new SchemaFile(additionalText.Path, schema));
-        }
-
-        return (schemas.ToImmutableArray(), schemaTable);
     }
     
     private static string GetErrorClass(Exception e)

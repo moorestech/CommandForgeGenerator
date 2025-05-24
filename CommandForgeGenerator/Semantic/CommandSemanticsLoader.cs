@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using CommandForgeGenerator.Generator.Json;
-using CommandForgeGenerator.Generator.Semantic;
 using Microsoft.CodeAnalysis;
 
 namespace CommandForgeGenerator.Generator.Semantic;
@@ -22,7 +21,13 @@ public class CommandSemanticsLoader
     public static CommandsSemantics GetCommandSemantics(string yamlText)
     {
         var rootNode = GetRootJsonObject();
-        return ParseCommandsSchema(rootNode);
+        var semantics = ParseCommandsSchema(rootNode);
+        var reservedCommands = ReservedCommandSemantics.GetReservedCommand();
+        
+        semantics.Commands.AddRange(reservedCommands);
+        
+        return semantics;
+        
         
         #region Internal
         
