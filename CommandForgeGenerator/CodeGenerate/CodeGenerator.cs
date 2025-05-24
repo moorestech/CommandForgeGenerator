@@ -57,40 +57,39 @@ public static class CodeGenerator
     public static string Generate(string className, CommandSemantics commandSemantics)
     {
         return $$$"""
-                    namespace CommandForgeGenerator.Command
-                    {
-                        public partial class {{{className}}} : ICommandForgeCommand
-                        {
-                            public const string Type = "{{{commandSemantics.Name}}}";
-                        
-                            public readonly CommandId CommandId;
-                            {{{GeneratePropertiesCode(commandSemantics.Properties).Indent(level: 2)}}}
-                            
-                            public static {{{className}}} Create(int commandId, global::Newtonsoft.Json.Linq.JToken json)
-                            {
-                                {{{GenerateCreateMethodTempVariables(commandSemantics.Properties).Indent(level: 3)}}}
-                                
-                                return new {{{className}}}(commandId, {{{GenerateUseConstructorCode(commandSemantics.Properties)}}});
-                            }
-                            
-                            public {{{className}}}(int commandId, {{{GenerateConstructorPropertiesCode(commandSemantics.Properties)}}})
-                            {
-                                CommandId = (CommandId)commandId;
-                                {{{GenerateConstructSetPropertiesCode(commandSemantics.Properties).Indent(level: 2)}}}
-                            }
-                        }
-                    }
+                  namespace CommandForgeGenerator.Command
+                  {
+                      public partial class {{{className}}} : ICommandForgeCommand
+                      {
+                          public const string Type = "{{{commandSemantics.Name}}}";
+                          public readonly CommandId CommandId;
+                          {{{GeneratePropertiesCode(commandSemantics.Properties).Indent(level: 2)}}}
+                    
+                          public static {{{className}}} Create(int commandId, global::Newtonsoft.Json.Linq.JToken json)
+                          {
+                              {{{GenerateCreateMethodTempVariables(commandSemantics.Properties).Indent(level: 3)}}}
+                              
+                              return new {{{className}}}(commandId{{{GenerateUseConstructorCode(commandSemantics.Properties)}}});
+                          }
+                          
+                          public {{{className}}}(int commandId{{{GenerateConstructorPropertiesCode(commandSemantics.Properties)}}})
+                          {
+                              CommandId = (CommandId)commandId;
+                              {{{GenerateConstructSetPropertiesCode(commandSemantics.Properties).Indent(level: 2)}}}
+                          }
+                      }
+                  }
                   """;
     }
     
     private static string GeneratePropertiesCode(List<CommandProperty> commandProperties)
     {
         var properties = new StringBuilder();
-        properties.AppendLine("\n");
+        properties.AppendLine();
         foreach (var property in commandProperties)
         {
             var type = GetTypeCode(property.Type);
-            properties.AppendLine($"public readonly {type} {property.CodeProperty} = ({type})json[\"{property.Name}\"]");
+            properties.AppendLine($"public readonly {type} {property.CodeProperty};");
         }
         
         return properties.ToString();
@@ -99,11 +98,18 @@ public static class CodeGenerator
     private static string GenerateCreateMethodTempVariables(List<CommandProperty> commandProperties)
     {
         var properties = new StringBuilder();
-        properties.AppendLine("\n");
+        properties.AppendLine();
         foreach (var property in commandProperties)
         {
             var type = GetTypeCode(property.Type);
-            properties.AppendLine($"var {property.CodeProperty} = ({type})json[\"{property.Name}\"]");
+            if (property.Type is CommandPropertyType.CommandId)
+            {
+                properties.AppendLine($"var {property.CodeProperty} = (CommandId)((int)json[\"{property.Name}\"]);");
+            }
+            else
+            {
+                properties.AppendLine($"var {property.CodeProperty} = ({type})json[\"{property.Name}\"];");
+            }
         }
         
         return properties.ToString();
@@ -136,7 +142,7 @@ public static class CodeGenerator
     private static string GenerateConstructSetPropertiesCode(List<CommandProperty> commandProperties)
     {
         var construct = new StringBuilder();
-        construct.AppendLine("\n");
+        construct.AppendLine();
         foreach (var property in commandProperties)
         {
             construct.AppendLine($"this.{property.CodeProperty} = {property.CodeProperty};");
@@ -163,6 +169,8 @@ public static class CodeGenerator
         var switchCases = GenerateLoaderSwitchCases(commandsSemantics.Commands);
         
         return $$$"""
+                  using System.Collections.Generic;
+                  
                   namespace CommandForgeGenerator.Command
                   {
                       public class CommandForgeLoader
@@ -199,7 +207,7 @@ public static class CodeGenerator
     private static string GenerateLoaderSwitchCases(List<CommandSemantics> commands)
     {
         var switchCases = new StringBuilder();
-        switchCases.AppendLine("\n");
+        switchCases.AppendLine();
         
         foreach (var command in commands)
         {
