@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using CommandForgeEditor.Generator.CodeGenerate;
-using CommandForgeEditor.Generator.LoaderGenerate;
-using CommandForgeEditor.Generator.Semantic;
+using CommandForgeGenerator.Generator.CodeGenerate;
+using CommandForgeGenerator.Generator.LoaderGenerate;
+using CommandForgeGenerator.Generator.Semantic;
 using CommandForgeGenerator.Generator;
 using CommandForgeGenerator.Generator.Definitions;
 using CommandForgeGenerator.Generator.Json;
@@ -13,7 +14,7 @@ using CommandForgeGenerator.Generator.NameResolve;
 using CommandForgeGenerator.Generator.Semantic;
 using Microsoft.CodeAnalysis;
 
-namespace CommandForgeEditor.Generator;
+namespace CommandForgeGenerator.Generator;
 
 [Generator(LanguageNames.CSharp)]
 public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
@@ -27,26 +28,29 @@ public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
 
     private void Emit(SourceProductionContext context, (Compilation compilation, ImmutableArray<AdditionalText> additionalTexts) input)
     {
-        
-        var commandsSchema = CommandSemanticsLoader.GetCommandSemantics(input.additionalTexts);
-        
-        
-        var (schemas, schemaTable) = ParseAdditionalText(input.additionalTexts);
-        var semantics = SemanticsGenerator.Generate(schemas.Select(schema => schema.Schema).ToImmutableArray(), schemaTable);
-        var nameTable = NameResolver.Resolve(semantics, schemaTable);
-        var definitions = DefinitionGenerator.Generate(semantics, nameTable, schemaTable);
+        try
+        {
+            var commandsSchema = CommandSemanticsLoader.GetCommandSemantics(input.additionalTexts);
+            var codeFiles = CodeGenerator.Generate(commandsSchema);
+            
+            if (codeFiles.Count == 0) return;
+            
+            foreach (var codeFile in codeFiles) context.AddSource(codeFile.FileName, codeFile.Code);
+        }
+        catch (Exception e)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                new DiagnosticDescriptor(
+                    id: "CommandForgeGeneratorError",
+                    title: e.Message,
+                    messageFormat: "エラー詳細: {0}",
+                    category: "SourceGenerator",
+                    DiagnosticSeverity.Error,
+                    isEnabledByDefault: true),
+                Location.None,
+                e.Message));
 
-        var codeFiles = CodeGenerator.Generate(definitions);
-        var loaderFiles = LoaderGenerator.Generate(definitions, semantics, nameTable);
-
-        // 生成するファイルがある場合のみ固定生成コードを生成する
-        if (codeFiles.Length == 0 && loaderFiles.Length == 0) return;
-
-        foreach (var codeFile in codeFiles) context.AddSource(codeFile.FileName, codeFile.Code);
-        foreach (var loaderFile in loaderFiles) context.AddSource(loaderFile.FileName, loaderFile.Code);
-
-        context.AddSource("CommandForgeGenerator.loader.BuiltinLoader.g.cs", LoaderGenerator.GenerateBuiltinLoaderCode());
-        context.AddSource("CommandForgeGenerator.loader.exception.g.cs", LoaderGenerator.GenerateLoaderExceptionTypeCode());
+        }
     }
 
     private (ImmutableArray<SchemaFile> files, SchemaTable schemaTable) ParseAdditionalText(ImmutableArray<AdditionalText> additionalTexts)

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CommandForgeEditor.Generator.Semantic;
+namespace CommandForgeGenerator.Generator.Semantic;
 
 public class CommandsSemantics
 {

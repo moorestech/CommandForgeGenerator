@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using CommandForgeEditor.Generator.LoaderGenerate;
-using CommandForgeEditor.Generator.Semantic;
+using CommandForgeGenerator.Generator.LoaderGenerate;
+using CommandForgeGenerator.Generator.Semantic;
 
-namespace CommandForgeEditor.Generator.CodeGenerate;
+namespace CommandForgeGenerator.Generator.CodeGenerate;
 
 public record CodeFile(string FileName, string Code)
 {

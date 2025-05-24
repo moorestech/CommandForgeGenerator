@@ -6,7 +6,7 @@
 
         <IsPackable>false</IsPackable>
 
-        <RootNamespace>CommandForgeEditor.Tests</RootNamespace>
+        <RootNamespace>CommandForgeGenerator.Tests</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -34,7 +34,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\CommandForgeGenerator\CommandForgeGenerator.csproj" />
-        <ProjectReference Include="..\CommandForgeEditor.Generator\CommandForgeEditor.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\CommandForgeGenerator.Generator\CommandForgeGenerator.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -51,20 +51,11 @@
         <None Update="OptionalTests\OptionalTestSchema2.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="SwitchPathTests\SwitchPathTestSchema.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="SwitchPathTests\SwitchPathThrowTestSchema.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="SwitchPathTests\RelativeSwitchPathTestSchema.yml"/>
         <None Remove="SwitchPathTest\AbsoluteSwitchPathTestSchema.yml"/>
-        <AdditionalFiles Include="SwitchPathTests\AbsoluteSwitchPathTestSchema.yml"/>
         <None Remove="OptionalTests\OptionalTestSchema.yml"/>
-        <AdditionalFiles Include="OptionalTests\OptionalTestSchema.yml"/>
     </ItemGroup>
 
 

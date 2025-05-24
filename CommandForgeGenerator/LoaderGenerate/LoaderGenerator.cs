@@ -8,7 +8,7 @@ using CommandForgeGenerator.Generator.NameResolve;
 using CommandForgeGenerator.Generator.Semantic;
 using Type = CommandForgeGenerator.Generator.Definitions.Type;
 
-namespace CommandForgeEditor.Generator.LoaderGenerate;
+namespace CommandForgeGenerator.Generator.LoaderGenerate;
 
 public record LoaderFile(string FileName, string Code)
 {

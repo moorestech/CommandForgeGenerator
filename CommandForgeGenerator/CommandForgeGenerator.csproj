@@ -14,10 +14,10 @@
         <DevelopmentDependency>true</DevelopmentDependency>
         <IncludeSymbols>false</IncludeSymbols>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-        <Title>CommandForgeEditor.Generator</Title>
+        <Title>CommandForgeGenerator.Generator</Title>
         <Authors>Moorestech</Authors>
         <Version>1.0.9</Version>
-        <RootNamespace>CommandForgeEditor.Generator</RootNamespace>
+        <RootNamespace>CommandForgeGenerator.Generator</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

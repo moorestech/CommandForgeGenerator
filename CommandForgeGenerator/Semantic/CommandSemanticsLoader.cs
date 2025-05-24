@@ -5,7 +5,7 @@ using CommandForgeGenerator.Generator.Json;
 using CommandForgeGenerator.Generator.Semantic;
 using Microsoft.CodeAnalysis;
 
-namespace CommandForgeEditor.Generator.Semantic;
+namespace CommandForgeGenerator.Generator.Semantic;
 
 public class CommandSemanticsLoader
 {
