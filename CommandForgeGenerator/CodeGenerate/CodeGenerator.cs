@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using CommandForgeEditor.Generator.LoaderGenerate;
 using CommandForgeEditor.Generator.Semantic;
-using CommandForgeGenerator.Generator.Definitions;
-using CommandForgeGenerator.Generator.NameResolve;
-using Type = CommandForgeGenerator.Generator.Definitions.Type;
 
 namespace CommandForgeEditor.Generator.CodeGenerate;
 
@@ -26,10 +22,12 @@ public static class CodeGenerator
         
         foreach (var command in commandsSemantics.Commands)
         {
-            var className = command.Name + "Command";
+            var className = CommandNameToClassName(command.Name);
             var code = Generate(className, command);
             files.Add(new CodeFile(className + ".g.cs", code));
         }
+        
+        files.Add(new CodeFile("CommandForgeLoader.g.cs", GenerateLoaderCode(commandsSemantics)));
         
         return files;
     }
@@ -53,6 +51,8 @@ public static class CodeGenerator
                     {
                         public partial class {{{className}}} : ICommandForgeCommand
                         {
+                            public const string Type = "{{{commandSemantics.Name}}}";
+                        
                             public readonly CommandId CommandId;
                             {{{GeneratePropertiesCode(commandSemantics.Properties).Indent(level: 2)}}}
                             
@@ -98,6 +98,7 @@ public static class CodeGenerator
         
         return properties.ToString();
     }
+    
     private static string GenerateUseConstructorCode(List<CommandProperty> commandProperties)
     {
         var useConstruct = new StringBuilder();
@@ -134,7 +135,6 @@ public static class CodeGenerator
         return construct.ToString();
     }
     
-    
     private static string GetTypeCode(CommandPropertyType type)
     {
         return type switch
@@ -146,8 +146,10 @@ public static class CodeGenerator
         };
     }
     
-    public static string GenerateLoaderCode()
+    public static string GenerateLoaderCode(CommandsSemantics commandsSemantics)
     {
+        var switchCases = GenerateLoaderSwitchCases(commandsSemantics.Commands);
+        
         return $$$"""
                   namespace CommandForgeGenerator.Command
                   {
@@ -172,7 +174,7 @@ public static class CodeGenerator
                           {
                               return type switch
                               {
-                                  TextCommand.Type => TextCommand.Create(id, commandJson),
+                                  {{{switchCases.Indent(level: 4)}}}
                                   
                                   _ => throw new System.Exception($"Unknown command type: {type}")
                               };
@@ -180,5 +182,25 @@ public static class CodeGenerator
                       }
                   }
                   """;
+    }
+    
+    private static string GenerateLoaderSwitchCases(List<CommandSemantics> commands)
+    {
+        var switchCases = new StringBuilder();
+        switchCases.AppendLine("\n");
+        
+        foreach (var command in commands)
+        {
+            var className = CommandNameToClassName(command.Name);
+            switchCases.AppendLine($"{className}.Type => {className}.Create(id, commandJson),");
+        }
+        
+        return switchCases.ToString();
+    }
+    
+    
+    private static string CommandNameToClassName(string commandName)
+    {
+        return commandName + "Command";
     }
 }
