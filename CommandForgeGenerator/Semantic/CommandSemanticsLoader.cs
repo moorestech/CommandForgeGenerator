@@ -16,6 +16,11 @@ public class CommandSemanticsLoader
             throw new Exception("yamlファイルが指定されていません。csprojのAdditionalFilesに追加してください");
         }
         
+        return GetCommandSemantics(additionalTexts[0].GetText()!.ToString());
+    }
+    
+    public static CommandsSemantics GetCommandSemantics(string yamlText)
+    {
         var rootNode = GetRootJsonObject();
         return ParseCommandsSchema(rootNode);
         
@@ -25,16 +30,14 @@ public class CommandSemanticsLoader
         {
             try
             {
-                var yamlText = additionalTexts[0].GetText()!.ToString();
                 var jsonText = Yaml.ToJson(yamlText);
                 return JsonParser.Parse(JsonTokenizer.GetTokens(jsonText)) as JsonObject;
             }
             catch (Exception e)
             {
-                throw new Exception("yamlファイルの形式が正しくありません。" + e.Message);
+                throw new Exception("yamlファイルの形式が正しくありません。" + e.Message + " " + e.StackTrace);
             }
         }
-        
         
         CommandsSemantics ParseCommandsSchema(JsonObject root)
         {

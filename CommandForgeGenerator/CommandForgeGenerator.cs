@@ -39,17 +39,7 @@ public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
         }
         catch (Exception e)
         {
-            context.ReportDiagnostic(Diagnostic.Create(
-                new DiagnosticDescriptor(
-                    id: "CommandForgeGeneratorError",
-                    title: e.Message,
-                    messageFormat: "エラー詳細: {0}",
-                    category: "SourceGenerator",
-                    DiagnosticSeverity.Error,
-                    isEnabledByDefault: true),
-                Location.None,
-                e.Message));
-
+            context.AddSource("Error.g.cs", GetErrorClass(e));
         }
     }
 
@@ -68,5 +58,19 @@ public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
         }
 
         return (schemas.ToImmutableArray(), schemaTable);
+    }
+    
+    private static string GetErrorClass(Exception e)
+    {
+        var message = e.Message + "\n" + e.StackTrace;
+        message = message.Replace("\"", "\\\"");
+        return $$$"""
+                  public class GenerateError
+                  {
+                      public string Message = @"
+                  {{{message}}}
+                  ";
+                  }
+                  """;
     }
 }

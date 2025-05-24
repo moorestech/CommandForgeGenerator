@@ -19,6 +19,7 @@ public static class CodeGenerator
         var files = new List<CodeFile>();
         
         files.Add(new CodeFile("ICommandForgeCommand.g.cs", TextInterfaceCode()));
+        files.Add(new CodeFile("CommandId.g.cs", CommandIdEnumCode()));
         
         foreach (var command in commandsSemantics.Commands)
         {
@@ -34,14 +35,24 @@ public static class CodeGenerator
     
     public static string TextInterfaceCode()
     {
-        return $$$"""
-                  namespace CommandForgeGenerator.Command
-                  {
-                      public partial interface ICommandForgeCommand
-                      {
-                      }
-                  }
-                  """;
+        return """
+               namespace CommandForgeGenerator.Command
+               {
+                   public partial interface ICommandForgeCommand
+                   {
+                   }
+               }
+               """;
+    }
+    
+    public static string CommandIdEnumCode()
+    {
+        return """
+               namespace CommandForgeGenerator.Command
+               {
+                   public enum CommandId { }
+               }
+               """;
     }
     
     public static string Generate(string className, CommandSemantics commandSemantics)
@@ -142,6 +153,8 @@ public static class CodeGenerator
             CommandPropertyType.String => "string",
             CommandPropertyType.Int => "int",
             CommandPropertyType.Float => "float",
+            CommandPropertyType.Bool => "bool",
+            CommandPropertyType.CommandId => "CommandId",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
