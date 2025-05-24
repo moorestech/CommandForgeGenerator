@@ -434,7 +434,7 @@ public static class LoaderGenerator
     
     public static string CommandNameToClassName(this string commandName)
     {
-        return commandName.CompareTo(0) + "Command";
+        return commandName.ToUpper(0) + "Command";
     }
     
     
