@@ -1,3 +1,4 @@
+using System.IO;
 using CommandForgeGenerator.Generator.CodeGenerate;
 using CommandForgeGenerator.Generator.Json;
 using CommandForgeGenerator.Generator.Semantic;
@@ -60,6 +61,14 @@ public class Test
         var yaml = GetSampleYaml();
         var commandsSchema = CommandSemanticsLoader.GetCommandSemantics(yaml);
         var codeFiles = CodeGenerator.Generate(commandsSchema);
+        
+        // 生成されたコードをこのファイルと同じディレクトリに出力
+        foreach (var codeFile in codeFiles)
+        {
+          var basePath = "/Users/katsumi.sato/RiderProjects/CommandForgeGenerator/CommandForgeGenerator.Tests";
+          var filePath = Path.Combine(basePath, codeFile.FileName);
+            File.WriteAllText(filePath, codeFile.Code);
+        }
         
         #region Internal
         
