@@ -13,8 +13,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: BuildGenerator
-      run: dotnet build mooresmaster.Generator/ -c release
+      run: dotnet build CommandForgeGenerator.Generator/ -c release
     - name: Pack
-      run: dotnet pack mooresmaster.Generator/
+      run: dotnet pack CommandForgeGenerator.Generator/
     - name: Push
-      run: dotnet nuget push ./mooresmaster.Generator/bin/Release/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push ./CommandForgeGenerator.Generator/bin/Release/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
