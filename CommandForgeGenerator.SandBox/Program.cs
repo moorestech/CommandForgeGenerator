@@ -1,6 +1,7 @@
-﻿using CommandForgeGenerator.Loader.BlocksModule;
+﻿using CommandForgeGenerator.Command;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine.Assertions;
 
 namespace CommandForgeGenerator.SandBox;
 
@@ -8,14 +9,24 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
-        var blockJson = GetJson("blocks");
-        BlocksLoader.Load(blockJson);
+        var json = GetJson();
+        var loader = CommandForgeLoader.LoadCommands(json);
+        
+        if (loader.Count == 152)
+        {
+            Console.WriteLine(loader.Count == 152 ? "OK" : "NG");
+        }
+        else
+        {
+            Console.WriteLine("NG " + loader.Count);
+        }
     }
 
-    private static JToken GetJson(string name)
+    private static JToken GetJson()
     {
-        var blockJsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestMod", $"{name}.json");
-        var blockJson = File.ReadAllText(blockJsonPath);
-        return (JToken)JsonConvert.DeserializeObject(blockJson);
+        var skitPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../", "SampleProject", "skits", "sample_skit.json");
+        Console.WriteLine(skitPath);
+        var json = File.ReadAllText(skitPath);
+        return (JToken)JsonConvert.DeserializeObject(json);
     }
 }

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using CommandForgeGenerator.Generator.Definitions;
-using CommandForgeGenerator.Generator.NameResolve;
-using Type = CommandForgeGenerator.Generator.Definitions.Type;
+using System.Text;
+using CommandForgeGenerator.Generator.Semantic;
 
 namespace CommandForgeGenerator.Generator.CodeGenerate;
 
@@ -15,161 +13,207 @@ public record CodeFile(string FileName, string Code)
 
 public static class CodeGenerator
 {
-    public static CodeFile[] Generate(Definition definition)
+    public static List<CodeFile> Generate(CommandsSemantics commandsSemantics)
     {
-        var files = new Dictionary<string, List<string>>();
-
-        foreach (var typeDefinition in definition.TypeDefinitions)
+        var files = new List<CodeFile>();
+        
+        files.Add(new CodeFile("ICommandForgeCommand.g.cs", TextInterfaceCode()));
+        files.Add(new CodeFile("CommandId.g.cs", CommandIdEnumCode()));
+        
+        foreach (var command in commandsSemantics.Commands)
         {
-            if (!files.TryGetValue(typeDefinition.FileName, out _)) files[typeDefinition.FileName] = [];
-
-            files[typeDefinition.FileName].Add(GenerateTypeDefinitionCode(typeDefinition));
+            var code = Generate(command.ClassName, command);
+            files.Add(new CodeFile(command.ClassName + ".g.cs", code));
         }
-
-        foreach (var interfaceDefinition in definition.InterfaceDefinitions)
-        {
-            if (!files.TryGetValue(interfaceDefinition.FileName, out _)) files[interfaceDefinition.FileName] = [];
-
-            files[interfaceDefinition.FileName].Add(GenerateInterfaceCode(interfaceDefinition));
-        }
-
-        return files
-            .Select(file =>
-                new CodeFile(
-                    file.Key,
-                    string.Join("\n", file.Value)
-                )
-            )
-            .Select(file =>
-                file with
-                {
-                    Code = $"{file.Code}"
-                })
-            .ToArray();
+        
+        files.Add(new CodeFile("CommandForgeLoader.g.cs", GenerateLoaderCode(commandsSemantics)));
+        
+        return files;
     }
-
-    private static string GenerateTypeDefinitionCode(TypeDefinition typeDef)
+    
+    public static string TextInterfaceCode()
+    {
+        return """
+               namespace CommandForgeGenerator.Command
+               {
+                   public partial interface ICommandForgeCommand
+                   {
+                   }
+               }
+               """;
+    }
+    
+    public static string CommandIdEnumCode()
+    {
+        return """
+               namespace CommandForgeGenerator.Command
+               {
+                   public enum CommandId { }
+               }
+               """;
+    }
+    
+    public static string Generate(string className, CommandSemantics commandSemantics)
     {
         return $$$"""
-                  namespace CommandForgeGenerator.Model.{{{typeDef.TypeName.ModuleName}}}
+                  namespace CommandForgeGenerator.Command
                   {
-                      public class {{{typeDef.TypeName.Name}}} {{{GenerateInterfaceImplementationCode(typeDef.InheritList)}}}
+                      public partial class {{{className}}} : ICommandForgeCommand
                       {
-                          {{{GeneratePropertiesCode(typeDef).Indent(level: 2)}}}
+                          public const string Type = "{{{commandSemantics.Name}}}";
+                          public readonly CommandId CommandId;
+                          {{{GeneratePropertiesCode(commandSemantics.Properties).Indent(level: 2)}}}
+                    
+                          public static {{{className}}} Create(int commandId, global::Newtonsoft.Json.Linq.JToken json)
+                          {
+                              {{{GenerateCreateMethodTempVariables(commandSemantics.Properties).Indent(level: 3)}}}
+                              
+                              return new {{{className}}}(commandId{{{GenerateUseConstructorCode(commandSemantics.Properties)}}});
+                          }
                           
-                          {{{GenerateTypeConstructorCode(typeDef).Indent(level: 2)}}}
-                          
-                          {{{GenerateConstEnumCode(typeDef).Indent(level: 2)}}}
+                          public {{{className}}}(int commandId{{{GenerateConstructorPropertiesCode(commandSemantics.Properties)}}})
+                          {
+                              CommandId = (CommandId)commandId;
+                              {{{GenerateConstructSetPropertiesCode(commandSemantics.Properties).Indent(level: 2)}}}
+                          }
                       }
                   }
                   """;
     }
-
-    private static string GeneratePropertiesCode(TypeDefinition typeDef)
+    
+    private static string GeneratePropertiesCode(List<CommandProperty> commandProperties)
     {
-        return string.Join(
-            "\n",
-            typeDef
-                .PropertyTable
-                .Select(kvp => $"public {GenerateTypeCode(kvp.Value.Type)} {kvp.Key} {{ get; }}")
-        );
-    }
-
-    private static string GenerateTypeConstructorCode(TypeDefinition typeDef)
-    {
-        return $$$"""
-                  public {{{typeDef.TypeName.Name}}}({{{string.Join(", ", typeDef.PropertyTable.Select(kvp => $"{GenerateTypeCode(kvp.Value.Type)} {kvp.Key}"))}}})
-                  {
-                      {{{string.Join("\n", typeDef.PropertyTable.Select(kvp => $"this.{kvp.Key} = {kvp.Key};")).Indent()}}}
-                  }
-                  """;
-    }
-
-    private static string GenerateConstEnumCode(TypeDefinition typeDef)
-    {
-        var enumCodes = new List<string>();
-
-        foreach (var kvp in typeDef.PropertyTable)
+        var properties = new StringBuilder();
+        properties.AppendLine();
+        foreach (var property in commandProperties)
         {
-            var name = kvp.Key;
-            var property = kvp.Value;
-            if (property.Enums is null)
-                continue;
-
-            enumCodes.Add($$$"""
-                             public static class {{{name}}}Const
-                             {
-                             {{{string.Join("\n", property.Enums.Select(e => $"    public const string {e} = \"{e}\";"))}}}
-                             }
-                             """);
+            var type = GetTypeCode(property.Type);
+            properties.AppendLine($"public readonly {type} {property.CodeProperty};");
         }
-
-        return $$$"""
-                  {{{string.Join("\n", enumCodes)}}}
-                  """;
+        
+        return properties.ToString();
     }
-
-    private static string GenerateTypeCode(Type type)
+    
+    private static string GenerateCreateMethodTempVariables(List<CommandProperty> commandProperties)
+    {
+        var properties = new StringBuilder();
+        properties.AppendLine();
+        foreach (var property in commandProperties)
+        {
+            var type = GetTypeCode(property.Type);
+            if (property.Type is CommandPropertyType.CommandId)
+            {
+                properties.AppendLine($"var {property.CodeProperty} = (CommandId)((int)json[\"{property.Name}\"]);");
+            }
+            else
+            {
+                properties.AppendLine($"var {property.CodeProperty} = ({type})json[\"{property.Name}\"];");
+            }
+        }
+        
+        return properties.ToString();
+    }
+    
+    private static string GenerateUseConstructorCode(List<CommandProperty> commandProperties)
+    {
+        var useConstruct = new StringBuilder();
+        foreach (var property in commandProperties)
+        {
+            useConstruct.Append($", {property.CodeProperty}");
+        }
+        
+        return useConstruct.ToString();
+    }
+    
+    public static string GenerateConstructorPropertiesCode(List<CommandProperty> commandProperties)
+    {
+        var properties = new StringBuilder();
+        foreach (var property in commandProperties)
+        {
+            var type = GetTypeCode(property.Type);
+            properties.Append($", {type} {property.CodeProperty}");
+            
+        }
+        
+        return properties.ToString();
+    }
+    
+    private static string GenerateConstructSetPropertiesCode(List<CommandProperty> commandProperties)
+    {
+        var construct = new StringBuilder();
+        construct.AppendLine();
+        foreach (var property in commandProperties)
+        {
+            construct.AppendLine($"this.{property.CodeProperty} = {property.CodeProperty};");
+        }
+        
+        return construct.ToString();
+    }
+    
+    private static string GetTypeCode(CommandPropertyType type)
     {
         return type switch
         {
-            BooleanType => "bool",
-            ArrayType arrayType => $"{GenerateTypeCode(arrayType.InnerType)}[]",
-            DictionaryType dictionaryType => $"global::System.Collections.Generic.Dictionary<{GenerateTypeCode(dictionaryType.KeyType)}, {GenerateTypeCode(dictionaryType.ValueType)}>",
-            FloatType => "float",
-            IntType => "int",
-            StringType => "string",
-            Vector2Type => "global::UnityEngine.Vector2",
-            Vector3Type => "global::UnityEngine.Vector3",
-            Vector4Type => "global::UnityEngine.Vector4",
-            Vector2IntType => "global::UnityEngine.Vector2Int",
-            Vector3IntType => "global::UnityEngine.Vector3Int",
-            UUIDType => "global::System.Guid",
-            CustomType customType => $"{customType.Name.GetModelName()}",
-            NullableType nullableType => $"{GenerateTypeCode(nullableType.InnerType)}?",
-            _ => throw new ArgumentOutOfRangeException(type.GetType().Name)
+            CommandPropertyType.String => "string",
+            CommandPropertyType.Int => "int",
+            CommandPropertyType.Float => "float",
+            CommandPropertyType.Bool => "bool",
+            CommandPropertyType.CommandId => "CommandId",
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
-
-    private static string GenerateInterfaceCode(InterfaceDefinition interfaceDef)
+    
+    public static string GenerateLoaderCode(CommandsSemantics commandsSemantics)
     {
+        var switchCases = GenerateLoaderSwitchCases(commandsSemantics.Commands);
+        
         return $$$"""
-                  namespace CommandForgeGenerator.Model.{{{interfaceDef.TypeName.ModuleName}}}
+                  using System.Collections.Generic;
+                  
+                  namespace CommandForgeGenerator.Command
                   {
-                      public interface {{{interfaceDef.TypeName.Name}}}{{{GenerateInterfaceImplementationCode(interfaceDef.ImplementationList)}}}
+                      public class CommandForgeLoader
                       {
-                          {{{GenerateInterfacePropertiesCode(interfaceDef).Indent(level: 2)}}}
+                          public static List<ICommandForgeCommand> LoadCommands(global::Newtonsoft.Json.Linq.JToken json)
+                          {
+                              var results = new List<ICommandForgeCommand>();
+                              var commandsJson = json["commands"];
+                              foreach (var commandJson in commandsJson)
+                              {
+                                  var id = (int)commandJson["id"];
+                                  var type = (string)commandJson["type"];
+                                  
+                                  var command = CreateCommand(id, type, commandJson);
+                                  results.Add(command);
+                              }
+                              return results;
+                          }
+                          
+                          public static ICommandForgeCommand CreateCommand(int id, string type, global::Newtonsoft.Json.Linq.JToken commandJson)
+                          {
+                              return type switch
+                              {
+                                  {{{switchCases.Indent(level: 4)}}}
+                                  
+                                  _ => throw new System.Exception($"Unknown command type: {type}")
+                              };
+                          }
                       }
                   }
                   """;
     }
-
-    private static string GenerateInterfaceImplementationCode(IEnumerable<TypeName> implementations)
+    
+    private static string GenerateLoaderSwitchCases(List<CommandSemantics> commands)
     {
-        var implementationsArray = implementations as TypeName[] ?? implementations.ToArray();
-        if (!implementationsArray.Any()) return "";
-
-        return $" : {string.Join(", ", implementationsArray.Select(i => i.GetModelName()))}";
-    }
-
-    private static string GenerateInterfacePropertiesCode(InterfaceDefinition interfaceDefinition)
-    {
-        var codes = new List<string>();
-
-        foreach (var kvp in interfaceDefinition.PropertyTable)
+        var switchCases = new StringBuilder();
+        switchCases.AppendLine();
+        
+        foreach (var command in commands)
         {
-            var name = kvp.Key;
-            var interfacePropertyDefinition = kvp.Value;
-
-            codes.Add($"public {GenerateTypeCode(interfacePropertyDefinition.Type)} {name} {{ get; }}");
+            var className = command.ClassName;
+            switchCases.AppendLine($"{className}.Type => {className}.Create(id, commandJson),");
         }
-
-        return string.Join("\n", codes);
-    }
-
-    private static string Indent(this string code, bool firstLine = false, int level = 1)
-    {
-        var indent = new string(' ', 4 * level);
-        return firstLine ? indent : "" + code.Replace("\n", $"\n{indent}");
+        
+        return switchCases.ToString();
     }
 }

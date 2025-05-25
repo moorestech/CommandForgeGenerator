@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "title": "sample_skit",
+    "version": 1,
+    "created": "2025-05-10T12:00:00+09:00",
+    "modified": "2025-05-24T14:15:18.203Z"
+  },
+  "commands": [
+    {
+      "id": 1,
+      "type": "narration",
+      "text": "とある平和な日の放課後。教室には数人の生徒が残っていた。"
+    },
+    {
+      "id": 2,
+      "type": "background",
+      "scene": "教室",
+      "transition": "フェード"
+    },
+    {
+      "id": 3,
+      "type": "bgm",
+      "track": "日常",
+      "volume": 0.7
+    },
+    {
+      "id": 149,
+      "type": "group_start",
+      "groupName": "新しいグループ",
+      "isCollapsed": false,
+      "backgroundColor": "#b9b9b9"
+    },
+    {
+      "id": 4,
+      "type": "camera",
+      "action": "ズームアウト",
+      "target": "全体"
+    },
+    {
+      "id": 151,
+      "type": "group_start",
+      "groupName": "新しいグループ",
+      "isCollapsed": false,
+      "backgroundColor": "#b9b9b9"
+    },
+    {
+      "id": 5,
+      "type": "emote",
+      "character": "キャラA",
+      "emotion": "通常"
+    },
+    {
+      "id": 153,
+      "type": "group_start",
+      "groupName": "新しいグループ",
+      "isCollapsed": false,
+      "backgroundColor": "#b9b9b9"
+    },
+    {
+      "id": 6,
+      "type": "emote",
+      "character": "キャラB",
+      "emotion": "通常"
+    },
+    {
+      "id": 7,
+      "type": "text",
+      "character": "キャラA",
+      "body": "今日の授業、難しかったね。"
+    },
+    {
+      "id": 8,
+      "type": "wait",
+      "seconds": 0.5,
+      "backgroundColor": "#57e317"
+    }
+  ]
+}
