@@ -13,8 +13,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: BuildGenerator
-      run: dotnet build CommandForgeGenerator.Generator/ -c release
+      run: dotnet build CommandForgeGenerator/ -c release
     - name: Pack
-      run: dotnet pack CommandForgeGenerator.Generator/
+      run: dotnet pack CommandForgeGenerator/
     - name: Push
-      run: dotnet nuget push ./CommandForgeGenerator.Generator/bin/Release/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push ./CommandForgeGenerator/bin/Release/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
