@@ -14,9 +14,19 @@
         <DevelopmentDependency>true</DevelopmentDependency>
         <IncludeSymbols>false</IncludeSymbols>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-        <Title>CommandForgeGenerator.Generator</Title>
+        
+        <!-- NuGet Package Metadata -->
+        <Title>CommandForge Generator</Title>
         <Authors>Moorestech</Authors>
-        <Version>1.0.9</Version>
+        <Version>1.0.0</Version>
+        <Description>CommandForgeEditorのcommands.yamlのC#コードを生成するSourceGenerator</Description>
+        <PackageProjectUrl>https://github.com/moorestech/CommandForgeGenerator</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/moorestech/CommandForgeGenerator</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>roslyn;source-generator;yaml;json;code-generation;game-development;data-loader;type-safety</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Copyright>Copyright (c) 2024 Moorestech</Copyright>
         <RootNamespace>CommandForgeGenerator.Generator</RootNamespace>
     </PropertyGroup>
 
@@ -39,6 +49,7 @@
 
     <ItemGroup>
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 
