@@ -6,3 +6,7 @@
 # Nuget
 https://www.nuget.org/packages/CommandForgeGenerator
 
+# 生成コードについて
+
+生成されたコードはNewtonsoft.Jsonに依存しています。
+
