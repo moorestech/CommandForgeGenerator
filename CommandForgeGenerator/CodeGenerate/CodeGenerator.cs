@@ -28,7 +28,21 @@ public static class CodeGenerator
         
         files.Add(new CodeFile("CommandForgeLoader.g.cs", GenerateLoaderCode(commandsSemantics)));
         
+        AddCompilation(files);
+        
         return files;
+        
+        #region Internal
+        
+        void AddCompilation(List<CodeFile> codeFiles)
+        {
+            foreach (var file in codeFiles)
+            {
+                file.Code = $"#if ENABLE_COMMAND_FORGE_GENERATOR\n{file.Code}\n#endif";
+            }
+        }
+        
+        #endregion
     }
     
     public static string TextInterfaceCode()
