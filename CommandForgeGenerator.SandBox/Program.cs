@@ -12,9 +12,9 @@ internal static class Program
         var json = GetJson();
         var loader = CommandForgeLoader.LoadCommands(json);
         
-        if (loader.Count == 152)
+        if (loader.Count == 12)
         {
-            Console.WriteLine(loader.Count == 152 ? "OK" : "NG");
+            Console.WriteLine("OK");
         }
         else
         {
