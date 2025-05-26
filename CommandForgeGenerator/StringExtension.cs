@@ -13,7 +13,6 @@ public static class StringExtension
         return commandName.ToUpper(0) + "Command";
     }
     
-    
     /// <summary>
     /// 指定した n 番目の文字を大文字に変換します。
     /// </summary>
