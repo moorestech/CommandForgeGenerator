@@ -23,15 +23,16 @@ using System;
 using System.Collections.Generic;
 using YamlDotNet.Core;
 
-namespace YamlDotNet.RepresentationModel;
+namespace YamlDotNet.RepresentationModel
+{
 
 /// <summary>
 ///     Manages the state of a <see cref="YamlDocument" /> while it is loading.
 /// </summary>
 internal class DocumentLoadingState
 {
-    private readonly Dictionary<AnchorName, YamlNode> anchors = [];
-    private readonly List<YamlNode> nodesWithUnresolvedAliases = [];
+    private readonly Dictionary<AnchorName, YamlNode> anchors = new Dictionary<AnchorName, YamlNode>();
+    private readonly List<YamlNode> nodesWithUnresolvedAliases = new List<YamlNode>();
 
     /// <summary>
     ///     Adds the specified node to the anchor list.
@@ -88,4 +89,6 @@ internal class DocumentLoadingState
     {
         foreach (var node in nodesWithUnresolvedAliases) node.ResolveAliases(this);
     }
+}
+
 }

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using CommandForgeGenerator.Generator.Semantic;
 
-namespace CommandForgeGenerator.Generator.CodeGenerate;
+namespace CommandForgeGenerator.Generator.CodeGenerate
+{
 
 public record CodeFile(string FileName, string Code)
 {
@@ -260,4 +261,5 @@ public static class CodeGenerator
         
         return switchCases.ToString();
     }
+}
 }

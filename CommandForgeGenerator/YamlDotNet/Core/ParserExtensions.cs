@@ -23,7 +23,8 @@ using System;
 using System.IO;
 using YamlDotNet.Core.Events;
 
-namespace YamlDotNet.Core;
+namespace YamlDotNet.Core
+{
 
 /// <summary>
 ///     Extension methods that provide useful abstractions over <see cref="IParser" />.
@@ -197,4 +198,6 @@ public static class ParserExtensions
         value = null;
         return false;
     }
+}
+
 }

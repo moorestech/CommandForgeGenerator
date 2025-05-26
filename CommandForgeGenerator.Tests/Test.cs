@@ -5,7 +5,8 @@ using CommandForgeGenerator.Generator.Semantic;
 using UnityEngine;
 using Xunit;
 
-namespace CommandForgeGenerator.Tests;
+namespace CommandForgeGenerator.Tests
+{
 
 public class Test
 {
@@ -239,4 +240,6 @@ public class Test
         #endregion
 
     }
+}
+
 }

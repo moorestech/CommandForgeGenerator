@@ -23,7 +23,8 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace YamlDotNet.Helpers;
+namespace YamlDotNet.Helpers
+{
 
 public static class ExpressionExtensions
 {
@@ -65,4 +66,6 @@ public static class ExpressionExtensions
 
         return null;
     }
+}
+
 }

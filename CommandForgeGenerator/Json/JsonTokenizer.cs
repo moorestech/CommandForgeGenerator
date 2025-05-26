@@ -2,9 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CommandForgeGenerator.Generator.Json;
+namespace CommandForgeGenerator.Generator.Json
+{
 
-public record struct Token(TokenType Type, string Literal);
+public readonly struct Token
+{
+    public TokenType Type { get; }
+    public string Literal { get; }
+
+    public Token(TokenType type, string literal)
+    {
+        Type = type;
+        Literal = literal;
+    }
+
+    public void Deconstruct(out TokenType type, out string literal)
+    {
+        type = Type;
+        literal = Literal;
+    }
+}
 
 public enum TokenType
 {
@@ -142,4 +159,6 @@ public static class JsonTokenizer
         public char CurrentChar => sourceText.Length > CurrentIndex ? sourceText[CurrentIndex] : '\0';
         public char NextChar => sourceText.Length > CurrentIndex + 1 ? sourceText[CurrentIndex + 1] : '\0';
     }
+}
+
 }

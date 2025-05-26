@@ -22,12 +22,13 @@
 using System.Collections.Generic;
 using YamlDotNet.Core;
 
-namespace YamlDotNet.Serialization.Utilities;
+namespace YamlDotNet.Serialization.Utilities
+{
 
 internal sealed class ObjectAnchorCollection
 {
-    private readonly Dictionary<object, string> anchorsByObject = [];
-    private readonly Dictionary<string, object> objectsByAnchor = [];
+    private readonly Dictionary<object, string> anchorsByObject = new Dictionary<object, string>();
+    private readonly Dictionary<string, object> objectsByAnchor = new Dictionary<string, object>();
 
     /// <summary>
     ///     Gets the <see cref="object" /> with the specified anchor.
@@ -64,4 +65,6 @@ internal sealed class ObjectAnchorCollection
     {
         return anchorsByObject.TryGetValue(@object, out anchor);
     }
+}
+
 }

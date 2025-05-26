@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
-namespace CommandForgeGenerator.Generator.Semantic;
+namespace CommandForgeGenerator.Generator.Semantic
+{
 
 public class CommandsSemantics
 {
@@ -50,4 +51,5 @@ public enum CommandPropertyType{
     Vector4,
     Vector2Int,
     Vector3Int,
+}
 }

@@ -30,7 +30,8 @@ using System.Linq;
 using System.Reflection;
 using YamlDotNet.Helpers;
 
-namespace YamlDotNet.Serialization.Utilities;
+namespace YamlDotNet.Serialization.Utilities
+{
 
 /// <summary>
 ///     Performs type conversions using every standard provided by the .NET library.
@@ -209,4 +210,6 @@ public static class TypeConverter
 
         if (!alreadyRegistered) TypeDescriptor.AddAttributes(typeof(TConvertible), new TypeConverterAttribute(typeof(TConverter)));
     }
+}
+
 }

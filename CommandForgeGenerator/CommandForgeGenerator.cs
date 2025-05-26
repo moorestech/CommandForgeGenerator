@@ -4,7 +4,8 @@ using CommandForgeGenerator.Generator.CodeGenerate;
 using CommandForgeGenerator.Generator.Semantic;
 using Microsoft.CodeAnalysis;
 
-namespace CommandForgeGenerator.Generator;
+namespace CommandForgeGenerator.Generator
+{
 
 [Generator(LanguageNames.CSharp)]
 public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
@@ -46,4 +47,6 @@ public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
                   }
                   """;
     }
+}
+
 }

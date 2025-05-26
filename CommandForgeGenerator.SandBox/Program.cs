@@ -3,7 +3,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine.Assertions;
 
-namespace CommandForgeGenerator.SandBox;
+namespace CommandForgeGenerator.SandBox
+{
 
 internal static class Program
 {
@@ -29,4 +30,6 @@ internal static class Program
         var json = File.ReadAllText(skitPath);
         return (JToken)JsonConvert.DeserializeObject(json);
     }
+}
+
 }

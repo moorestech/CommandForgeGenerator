@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace CommandForgeGenerator.Generator.Json;
+namespace CommandForgeGenerator.Generator.Json
+{
 
 public interface IJsonNode
 {
@@ -169,4 +170,6 @@ public static class JsonParser
         public Token CurrentToken => tokens.Length > CurrentIndex ? tokens[CurrentIndex] : new Token(TokenType.Illegal, "");
         public Token NextToken => tokens.Length > CurrentIndex + 1 ? tokens[CurrentIndex + 1] : new Token(TokenType.Illegal, "");
     }
+}
+
 }

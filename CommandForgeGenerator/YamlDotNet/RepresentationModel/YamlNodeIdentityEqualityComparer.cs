@@ -21,7 +21,8 @@
 
 using System.Collections.Generic;
 
-namespace YamlDotNet.RepresentationModel;
+namespace YamlDotNet.RepresentationModel
+{
 
 /// <summary>
 ///     Comparer that is based on identity comparisons.
@@ -43,4 +44,6 @@ public sealed class YamlNodeIdentityEqualityComparer : IEqualityComparer<YamlNod
     }
 
     #endregion
+}
+
 }

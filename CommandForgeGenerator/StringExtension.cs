@@ -1,4 +1,5 @@
-namespace CommandForgeGenerator.Generator;
+namespace CommandForgeGenerator.Generator
+{
 
 public static class StringExtension
 {
@@ -28,4 +29,5 @@ public static class StringExtension
         _array[no] = up;
         return new string(_array);
     }
+}
 }

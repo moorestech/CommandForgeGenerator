@@ -22,7 +22,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace YamlDotNet.Serialization;
+namespace YamlDotNet.Serialization
+{
 
 /// <summary>
 ///     Provides access to the properties of a type.
@@ -71,4 +72,6 @@ public interface ITypeInspector
     /// <param name="enumValue"></param>
     /// <returns></returns>
     string GetEnumValue(object enumValue);
+}
+
 }

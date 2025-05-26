@@ -25,7 +25,8 @@ using System.Collections.Generic;
 using System.Linq;
 using YamlDotNet.Helpers;
 
-namespace YamlDotNet.Serialization.Utilities;
+namespace YamlDotNet.Serialization.Utilities
+{
 
 /// <summary>
 ///     A cache / map for <see cref="IYamlTypeConverter" /> instances.
@@ -35,7 +36,7 @@ internal sealed class TypeConverterCache
     private readonly ConcurrentDictionary<Type, (bool HasMatch, IYamlTypeConverter? TypeConverter)> cache = new();
     private readonly IYamlTypeConverter[] typeConverters;
 
-    public TypeConverterCache(IEnumerable<IYamlTypeConverter>? typeConverters) : this(typeConverters?.ToArray() ?? [])
+    public TypeConverterCache(IEnumerable<IYamlTypeConverter>? typeConverters) : this(typeConverters?.ToArray() ?? Array.Empty<IYamlTypeConverter>())
     {
     }
 
@@ -92,4 +93,6 @@ internal sealed class TypeConverterCache
 
         return (false, null);
     }
+}
+
 }

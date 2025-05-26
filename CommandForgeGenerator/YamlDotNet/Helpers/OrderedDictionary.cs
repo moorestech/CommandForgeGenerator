@@ -26,7 +26,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
-namespace YamlDotNet.Helpers;
+namespace YamlDotNet.Helpers
+{
 
 [Serializable]
 internal sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, TValue>
@@ -43,7 +44,7 @@ internal sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey,
 
     public OrderedDictionary(IEqualityComparer<TKey> comparer)
     {
-        list = [];
+        list = new List<KeyValuePair<TKey, TValue>>();
         dictionary = new Dictionary<TKey, TValue>(comparer);
         this.comparer = comparer;
     }
@@ -199,7 +200,7 @@ internal sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey,
     internal void OnDeserializedMethod(StreamingContext context)
     {
         // Reconstruct the dictionary from the serialized list
-        dictionary = [];
+        dictionary = new Dictionary<TKey, TValue>();
         foreach (var kvp in list) dictionary[kvp.Key] = kvp.Value;
     }
 
@@ -300,4 +301,6 @@ internal sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey,
             return GetEnumerator();
         }
     }
+}
+
 }

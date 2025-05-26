@@ -33,7 +33,7 @@ namespace YamlDotNet.Serialization
     /// </summary>
     public sealed partial class YamlAttributeOverrides
     {
-        private readonly Dictionary<AttributeKey, List<AttributeMapping>> overrides = [];
+        private readonly Dictionary<AttributeKey, List<AttributeMapping>> overrides = new Dictionary<AttributeKey, List<AttributeMapping>>();
 
         public T GetAttribute<T>(Type type, string member) where T : Attribute
         {
@@ -71,7 +71,7 @@ namespace YamlDotNet.Serialization
             var attributeKey = new AttributeKey(attribute.GetType(), member);
             if (!overrides.TryGetValue(attributeKey, out var mappings))
             {
-                mappings = [];
+                mappings = new List<AttributeMapping>();
                 overrides.Add(attributeKey, mappings);
             }
             else if (mappings.Contains(mapping))

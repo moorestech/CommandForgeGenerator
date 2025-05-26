@@ -4,7 +4,8 @@ using System.Collections.Immutable;
 using CommandForgeGenerator.Generator.Json;
 using Microsoft.CodeAnalysis;
 
-namespace CommandForgeGenerator.Generator.Semantic;
+namespace CommandForgeGenerator.Generator.Semantic
+{
 
 public class CommandSemanticsLoader
 {
@@ -103,3 +104,5 @@ public class CommandSemanticsLoader
     }
 }
 
+
+}

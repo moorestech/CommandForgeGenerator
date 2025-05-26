@@ -28,7 +28,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace YamlDotNet.Core.ObjectPool;
+namespace YamlDotNet.Core.ObjectPool
+{
 
 /// <summary>
 ///     Default implementation of <see cref="ObjectPool{T}" />.
@@ -122,4 +123,6 @@ internal class DefaultObjectPool<T> : ObjectPool<T> where T : class
 
         return true;
     }
+}
+
 }

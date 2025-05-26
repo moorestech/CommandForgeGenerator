@@ -1,6 +1,7 @@
 using YamlDotNet.Serialization;
 
-namespace CommandForgeGenerator.Generator.Json;
+namespace CommandForgeGenerator.Generator.Json
+{
 
 public static class Yaml
 {
@@ -12,4 +13,6 @@ public static class Yaml
         
         return serializer.Serialize(yamlObject).Trim();
     }
+}
+
 }

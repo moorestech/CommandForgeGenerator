@@ -21,7 +21,8 @@
 
 using System;
 
-namespace YamlDotNet.Core;
+namespace YamlDotNet.Core
+{
 
 public sealed class EmitterSettings
 {
@@ -208,4 +209,6 @@ public sealed class EmitterSettings
             true
         );
     }
+}
+
 }

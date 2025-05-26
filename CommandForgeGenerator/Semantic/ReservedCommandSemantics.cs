@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
-namespace CommandForgeGenerator.Generator.Semantic;
+namespace CommandForgeGenerator.Generator.Semantic
+{
 
 public static class ReservedCommandSemantics
 {
@@ -14,4 +15,5 @@ public static class ReservedCommandSemantics
         var groupEnd = new CommandSemantics("group_end", new List<CommandProperty>());
         return new List<CommandSemantics>(){groupStart, groupEnd};
     }
+}
 }
