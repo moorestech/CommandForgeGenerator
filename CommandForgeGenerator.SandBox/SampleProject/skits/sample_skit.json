@@ -73,6 +73,11 @@
       "type": "wait",
       "seconds": 0.5,
       "backgroundColor": "#57e317"
+    },
+    {
+      "id": 100,
+      "type": "characterPosition",
+      "position": [0, 10.5 , 0]
     }
   ]
 }
