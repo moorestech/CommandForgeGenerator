@@ -82,6 +82,11 @@ public class CommandSemanticsLoader
                         "boolean" => CommandPropertyType.Bool,
                         "enum" => CommandPropertyType.String,
                         "command" => CommandPropertyType.CommandId,
+                        "vector2" => CommandPropertyType.Vector2,
+                        "vector3" => CommandPropertyType.Vector3,
+                        "vector4" => CommandPropertyType.Vector4,
+                        "vector2int" => CommandPropertyType.Vector2Int,
+                        "vector3int" => CommandPropertyType.Vector3Int,
                         _ => throw new Exception($"未知の property type \"{typeStr}\"")
                     };
                     

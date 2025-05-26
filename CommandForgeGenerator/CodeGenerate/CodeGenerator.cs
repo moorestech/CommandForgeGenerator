@@ -119,6 +119,31 @@ public static class CodeGenerator
             {
                 properties.AppendLine($"var {property.CodeProperty} = (CommandId)((int)json[\"{property.Name}\"]);");
             }
+            else if (property.Type is CommandPropertyType.Vector2)
+            {
+                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector2((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1]);");
+            }
+            else if (property.Type is CommandPropertyType.Vector3)
+            {
+                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector3((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1], (float){property.CodeProperty}Array[2]);");
+            }
+            else if (property.Type is CommandPropertyType.Vector4)
+            {
+                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector4((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1], (float){property.CodeProperty}Array[2], (float){property.CodeProperty}Array[3]);");
+            }
+            else if (property.Type is CommandPropertyType.Vector2Int)
+            {
+                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector2Int((int){property.CodeProperty}Array[0], (int){property.CodeProperty}Array[1]);");
+            }
+            else if (property.Type is CommandPropertyType.Vector3Int)
+            {
+                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector3Int((int){property.CodeProperty}Array[0], (int){property.CodeProperty}Array[1], (int){property.CodeProperty}Array[2]);");
+            }
             else
             {
                 properties.AppendLine($"var {property.CodeProperty} = ({type})json[\"{property.Name}\"];");
@@ -173,6 +198,11 @@ public static class CodeGenerator
             CommandPropertyType.Float => "float",
             CommandPropertyType.Bool => "bool",
             CommandPropertyType.CommandId => "CommandId",
+            CommandPropertyType.Vector2 => "global::UnityEngine.Vector2",
+            CommandPropertyType.Vector3 => "global::UnityEngine.Vector3",
+            CommandPropertyType.Vector4 => "global::UnityEngine.Vector4",
+            CommandPropertyType.Vector2Int => "global::UnityEngine.Vector2Int",
+            CommandPropertyType.Vector3Int => "global::UnityEngine.Vector3Int",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }

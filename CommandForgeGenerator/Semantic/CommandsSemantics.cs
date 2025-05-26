@@ -45,4 +45,9 @@ public enum CommandPropertyType{
     Float,
     Bool,
     CommandId,
+    Vector2,
+    Vector3,
+    Vector4,
+    Vector2Int,
+    Vector3Int,
 }
