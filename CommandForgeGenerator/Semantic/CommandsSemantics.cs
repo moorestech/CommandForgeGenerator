@@ -5,10 +5,12 @@ namespace CommandForgeGenerator.Generator.Semantic;
 public class CommandsSemantics
 {
     public readonly List<CommandSemantics> Commands;
+    public readonly string? GenerateCodePath;
 
-    public CommandsSemantics(List<CommandSemantics> commands)
+    public CommandsSemantics(List<CommandSemantics> commands, string? generateCodePath = null)
     {
         Commands = commands;
+        GenerateCodePath = generateCodePath;
     }
 }
 

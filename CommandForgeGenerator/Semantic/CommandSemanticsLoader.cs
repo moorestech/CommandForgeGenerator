@@ -47,7 +47,8 @@ public class CommandSemanticsLoader
         CommandsSemantics ParseCommandsSchema(JsonObject root)
         {
             var commandsJson = root["commands"] as JsonArray ?? throw new Exception("commands 配列が見つかりません。");
-            
+            var generateCodePath = (root["generateCodePath"] as JsonString)?.Literal;
+
             var commands = new List<CommandSemantics>();
             
             foreach (var commandsJsonNode in commandsJson.Nodes)
@@ -96,7 +97,7 @@ public class CommandSemanticsLoader
                 commands.Add(new CommandSemantics(commandName, properties));
             }
             
-            return new CommandsSemantics(commands);
+            return new CommandsSemantics(commands, generateCodePath);
         }
         
         #endregion

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using System.IO;
 using CommandForgeGenerator.Generator.CodeGenerate;
 using CommandForgeGenerator.Generator.Semantic;
 using Microsoft.CodeAnalysis;
@@ -22,6 +23,8 @@ public class CommandForgeGeneratorSourceGenerator : IIncrementalGenerator
         {
             var commandsSchema = CommandSemanticsLoader.GetCommandSemantics(input.additionalTexts);
             var codeFiles = CodeGenerator.Generate(commandsSchema);
+            var yamlDir = Path.GetDirectoryName(input.additionalTexts[0].Path)!;
+            TemplateClassGenerator.Generate(yamlDir, commandsSchema);
             
             if (codeFiles.Count == 0) return;
             
