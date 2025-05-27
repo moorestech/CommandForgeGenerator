@@ -1,74 +1,77 @@
 using System.IO;
 using System.Text;
-using CommandForgeGenerator.Generator;
-using CommandForgeGenerator.Generator.Semantic;
 using UnityEditor;
 using UnityEngine;
 
-public class CommandTemplateGenerator : EditorWindow
+
+namespace CommandForgeGeneratorUtil
 {
-    [SerializeField] private string commandsYamlPath = string.Empty;
-    [SerializeField] private string outputDirectory = string.Empty;
-
-    [MenuItem("Windows/CommandTemplateGenerator")]
-    private static void ShowWindow()
+    public class CommandTemplateGenerator : EditorWindow
     {
-        var window = GetWindow<CommandTemplateGenerator>();
-        window.titleContent = new GUIContent("CommandTemplateGenerator");
-        window.Show();
-    }
+        [SerializeField] private string commandsYamlPath = string.Empty;
+        [SerializeField] private string outputDirectory = string.Empty;
 
-    private void OnGUI()
-    {
-        EditorGUILayout.LabelField("Commands.yaml", EditorStyles.boldLabel);
-        commandsYamlPath = EditorGUILayout.TextField("Path", commandsYamlPath);
-
-        EditorGUILayout.Space();
-
-        EditorGUILayout.LabelField("Output Directory", EditorStyles.boldLabel);
-        outputDirectory = EditorGUILayout.TextField("Path", outputDirectory);
-
-        EditorGUILayout.Space();
-
-        if (GUILayout.Button("Generate"))
+        [MenuItem("Window/CommandTemplateGenerator")]
+        private static void ShowWindow()
         {
-            Generate();
-        }
-    }
-
-    private void Generate()
-    {
-        if (!File.Exists(commandsYamlPath))
-        {
-            Debug.LogError($"commands.yaml not found: {commandsYamlPath}");
-            return;
+            var window = GetWindow<CommandTemplateGenerator>();
+            window.titleContent = new GUIContent("CommandTemplateGenerator");
+            window.Show();
         }
 
-        if (!Directory.Exists(outputDirectory))
+        private void OnGUI()
         {
-            Directory.CreateDirectory(outputDirectory);
+            EditorGUILayout.LabelField("Commands.yaml", EditorStyles.boldLabel);
+            commandsYamlPath = EditorGUILayout.TextField("Path", commandsYamlPath);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Output Directory", EditorStyles.boldLabel);
+            outputDirectory = EditorGUILayout.TextField("Path", outputDirectory);
+
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Generate"))
+            {
+                Generate();
+            }
         }
 
-        var yamlText = File.ReadAllText(commandsYamlPath);
-        var semantics = CommandSemanticsLoader.GetCommandSemantics(yamlText);
-
-        foreach (var command in semantics.Commands)
+        private void Generate()
         {
-            var className = command.ClassName;
-            var code = $$"""
-                         namespace CommandForgeGenerator.Command
-                         {
-                             public partial class {{className}} : ICommandForgeCommand
-                             {
-                             }
-                         }
-                         """;
+            if (!File.Exists(commandsYamlPath))
+            {
+                Debug.LogError($"commands.yaml not found: {commandsYamlPath}");
+                return;
+            }
 
-            var filePath = Path.Combine(outputDirectory, className + ".cs");
-            File.WriteAllText(filePath, code, Encoding.UTF8);
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
+
+            var yamlText = File.ReadAllText(commandsYamlPath);
+            var semantics = CommandSemanticsLoader.GetCommandSemantics(yamlText);
+
+            foreach (var command in semantics.Commands)
+            {
+                var className = command.ClassName;
+                var sb = new StringBuilder()
+                    .AppendLine("namespace CommandForgeGenerator.Command")
+                    .AppendLine("{")
+                    .AppendLine($"    public partial class {className}")
+                    .AppendLine("    {")
+                    .AppendLine("    }")
+                    .AppendLine("}");
+                var code = sb.ToString();
+
+
+                var filePath = Path.Combine(outputDirectory, className + ".cs");
+                File.WriteAllText(filePath, code, Encoding.UTF8);
+            }
+
+            AssetDatabase.Refresh();
+            Debug.Log("Command templates generated.");
         }
-
-        AssetDatabase.Refresh();
-        Debug.Log("Command templates generated.");
     }
 }
