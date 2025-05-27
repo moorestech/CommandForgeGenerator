@@ -3,11 +3,13 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-
 namespace CommandForgeGeneratorUtil
 {
     public class CommandTemplateGenerator : EditorWindow
     {
+        private const string CommandsYamlPathKey = "CommandTemplateGenerator_CommandsYamlPath";
+        private const string OutputDirectoryKey = "CommandTemplateGenerator_OutputDirectory";
+
         [SerializeField] private string commandsYamlPath = string.Empty;
         [SerializeField] private string outputDirectory = string.Empty;
 
@@ -19,15 +21,39 @@ namespace CommandForgeGeneratorUtil
             window.Show();
         }
 
+        private void OnEnable()
+        {
+            // Load saved preferences
+            commandsYamlPath = EditorPrefs.GetString(CommandsYamlPathKey, string.Empty);
+            outputDirectory = EditorPrefs.GetString(OutputDirectoryKey, string.Empty);
+        }
+
+        private void OnDisable()
+        {
+            // Save preferences when the window is closed
+            EditorPrefs.SetString(CommandsYamlPathKey, commandsYamlPath);
+            EditorPrefs.SetString(OutputDirectoryKey, outputDirectory);
+        }
+
         private void OnGUI()
         {
             EditorGUILayout.LabelField("Commands.yaml", EditorStyles.boldLabel);
-            commandsYamlPath = EditorGUILayout.TextField("Path", commandsYamlPath);
+            var newYamlPath = EditorGUILayout.TextField("Path", commandsYamlPath);
+            if (newYamlPath != commandsYamlPath)
+            {
+                commandsYamlPath = newYamlPath;
+                EditorPrefs.SetString(CommandsYamlPathKey, commandsYamlPath);
+            }
 
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("Output Directory", EditorStyles.boldLabel);
-            outputDirectory = EditorGUILayout.TextField("Path", outputDirectory);
+            var newOutputPath = EditorGUILayout.TextField("Path", outputDirectory);
+            if (newOutputPath != outputDirectory)
+            {
+                outputDirectory = newOutputPath;
+                EditorPrefs.SetString(OutputDirectoryKey, outputDirectory);
+            }
 
             EditorGUILayout.Space();
 
@@ -64,7 +90,6 @@ namespace CommandForgeGeneratorUtil
                     .AppendLine("    }")
                     .AppendLine("}");
                 var code = sb.ToString();
-
 
                 var filePath = Path.Combine(outputDirectory, className + ".cs");
                 File.WriteAllText(filePath, code, Encoding.UTF8);
