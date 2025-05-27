@@ -1,0 +1,10 @@
+{
+  "name": "com.moorestech.commandforgegenerator-util",
+  "displayName": "CommandForge Generator Util",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "Unity editor extension for generating commands using CommandForge.",
+  "author": {
+    "name": "Moorestech"
+  }
+}
