@@ -1,0 +1,6 @@
+{
+  "name": "CommandForgeGeneratorUtil.Editor",
+  "references": [],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}
