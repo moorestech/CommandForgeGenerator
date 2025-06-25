@@ -101,7 +101,7 @@ public static class CodeGenerator
         properties.AppendLine();
         foreach (var property in commandProperties)
         {
-            var type = GetTypeCode(property.Type);
+            var type = GetTypeCode(property.Type, property.IsRequired);
             properties.AppendLine($"public readonly {type} {property.CodeProperty};");
         }
         
@@ -114,39 +114,82 @@ public static class CodeGenerator
         properties.AppendLine();
         foreach (var property in commandProperties)
         {
-            var type = GetTypeCode(property.Type);
-            if (property.Type is CommandPropertyType.CommandId)
+            var type = GetTypeCode(property.Type, property.IsRequired);
+            
+            if (property.IsRequired)
             {
-                properties.AppendLine($"var {property.CodeProperty} = (CommandId)((int)json[\"{property.Name}\"]);");
-            }
-            else if (property.Type is CommandPropertyType.Vector2)
-            {
-                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
-                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector2((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1]);");
-            }
-            else if (property.Type is CommandPropertyType.Vector3)
-            {
-                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
-                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector3((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1], (float){property.CodeProperty}Array[2]);");
-            }
-            else if (property.Type is CommandPropertyType.Vector4)
-            {
-                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
-                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector4((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1], (float){property.CodeProperty}Array[2], (float){property.CodeProperty}Array[3]);");
-            }
-            else if (property.Type is CommandPropertyType.Vector2Int)
-            {
-                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
-                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector2Int((int){property.CodeProperty}Array[0], (int){property.CodeProperty}Array[1]);");
-            }
-            else if (property.Type is CommandPropertyType.Vector3Int)
-            {
-                properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
-                properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector3Int((int){property.CodeProperty}Array[0], (int){property.CodeProperty}Array[1], (int){property.CodeProperty}Array[2]);");
+                // required の場合は従来通り
+                if (property.Type is CommandPropertyType.CommandId)
+                {
+                    properties.AppendLine($"var {property.CodeProperty} = (CommandId)((int)json[\"{property.Name}\"]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector2)
+                {
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector2((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector3)
+                {
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector3((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1], (float){property.CodeProperty}Array[2]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector4)
+                {
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector4((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1], (float){property.CodeProperty}Array[2], (float){property.CodeProperty}Array[3]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector2Int)
+                {
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector2Int((int){property.CodeProperty}Array[0], (int){property.CodeProperty}Array[1]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector3Int)
+                {
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = new global::UnityEngine.Vector3Int((int){property.CodeProperty}Array[0], (int){property.CodeProperty}Array[1], (int){property.CodeProperty}Array[2]);");
+                }
+                else
+                {
+                    properties.AppendLine($"var {property.CodeProperty} = ({type})json[\"{property.Name}\"];");
+                }
             }
             else
             {
-                properties.AppendLine($"var {property.CodeProperty} = ({type})json[\"{property.Name}\"];");
+                // nullable の場合はnullチェックを追加
+                properties.AppendLine($"var {property.CodeProperty}Token = json[\"{property.Name}\"];");
+                
+                if (property.Type is CommandPropertyType.CommandId)
+                {
+                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : (CommandId?)((int){property.CodeProperty}Token);");
+                }
+                else if (property.Type is CommandPropertyType.Vector2)
+                {
+                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector2((float){property.CodeProperty}Token[0], (float){property.CodeProperty}Token[1]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector3)
+                {
+                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector3((float){property.CodeProperty}Token[0], (float){property.CodeProperty}Token[1], (float){property.CodeProperty}Token[2]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector4)
+                {
+                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector4((float){property.CodeProperty}Token[0], (float){property.CodeProperty}Token[1], (float){property.CodeProperty}Token[2], (float){property.CodeProperty}Token[3]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector2Int)
+                {
+                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector2Int((int){property.CodeProperty}Token[0], (int){property.CodeProperty}Token[1]);");
+                }
+                else if (property.Type is CommandPropertyType.Vector3Int)
+                {
+                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector3Int((int){property.CodeProperty}Token[0], (int){property.CodeProperty}Token[1], (int){property.CodeProperty}Token[2]);");
+                }
+                else if (property.Type is CommandPropertyType.String)
+                {
+                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : (string?){property.CodeProperty}Token;");
+                }
+                else
+                {
+                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : ({type}){property.CodeProperty}Token;");
+                }
             }
         }
         
@@ -169,7 +212,7 @@ public static class CodeGenerator
         var properties = new StringBuilder();
         foreach (var property in commandProperties)
         {
-            var type = GetTypeCode(property.Type);
+            var type = GetTypeCode(property.Type, property.IsRequired);
             properties.Append($", {type} {property.CodeProperty}");
             
         }
@@ -189,9 +232,9 @@ public static class CodeGenerator
         return construct.ToString();
     }
     
-    private static string GetTypeCode(CommandPropertyType type)
+    private static string GetTypeCode(CommandPropertyType type, bool isRequired)
     {
-        return type switch
+        var baseType = type switch
         {
             CommandPropertyType.String => "string",
             CommandPropertyType.Int => "int",
@@ -205,6 +248,20 @@ public static class CodeGenerator
             CommandPropertyType.Vector3Int => "global::UnityEngine.Vector3Int",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
+        
+        // 値型でrequiredでない場合は nullable にする
+        if (!isRequired && type != CommandPropertyType.String)
+        {
+            return baseType + "?";
+        }
+        
+        // 参照型でも明示的に nullable にする（C# 8.0以降）
+        if (!isRequired && type == CommandPropertyType.String)
+        {
+            return baseType + "?";
+        }
+        
+        return baseType;
     }
     
     public static string GenerateLoaderCode(CommandsSemantics commandsSemantics)
