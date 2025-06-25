@@ -8,8 +8,8 @@ public static class ReservedCommandSemantics
     {
         var groupStart = new CommandSemantics("group_start", new List<CommandProperty>()
         {
-            new(CommandPropertyType.String, "groupName"),
-            new(CommandPropertyType.Bool, "isCollapsed"),
+            new(CommandPropertyType.String, "groupName", true),
+            new(CommandPropertyType.Bool, "isCollapsed", true),
         });
         var groupEnd = new CommandSemantics("group_end", new List<CommandProperty>());
         return new List<CommandSemantics>(){groupStart, groupEnd};

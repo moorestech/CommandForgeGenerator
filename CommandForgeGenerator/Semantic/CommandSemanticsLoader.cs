@@ -90,7 +90,14 @@ public class CommandSemanticsLoader
                         _ => throw new Exception($"未知の property type \"{typeStr}\"")
                     };
                     
-                    properties.Add(new CommandProperty(mappedType, propName));
+                    // required フィールドを読み取る
+                    var isRequired = true;
+                    if (propObj.Nodes.ContainsKey("required") && propObj["required"] is JsonBoolean requiredNode)
+                    {
+                        isRequired = requiredNode.Literal;
+                    }
+                    
+                    properties.Add(new CommandProperty(mappedType, propName, isRequired));
                 }
                 
                 commands.Add(new CommandSemantics(commandName, properties));

@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using CommandForgeGenerator.Generator.CodeGenerate;
 using CommandForgeGenerator.Generator.Json;
 using CommandForgeGenerator.Generator.Semantic;
@@ -64,6 +65,7 @@ public class Test
         var codeFiles = CodeGenerator.Generate(commandsSchema);
         
         Assert.Equal(16, codeFiles.Count);
+        Assert.Equal(GenerateTestCode.TextCommand, codeFiles.FirstOrDefault(c => c.FileName == "TextCommand.g.cs").Code);
         
         #region Internal
         
@@ -84,7 +86,6 @@ public class Test
                          body:
                            type: string
                            multiline: true
-                           required: true
                    
                      - id: emote
                        label: エモート
