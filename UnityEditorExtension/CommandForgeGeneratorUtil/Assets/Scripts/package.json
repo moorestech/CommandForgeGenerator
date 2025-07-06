@@ -1,0 +1,13 @@
+{
+    "name": "com.moorestech.command-forge-generator-util",
+    "version": "1.0.0",
+    "displayName": "",
+    "description": "CommandForgeGenerator Util Package",
+    "unity": "2022.3",
+    "dependencies": {},
+    "keywords": [ ],
+    "author": {
+        "name": "moorestech",
+        "url": "https://github.com/moorestech/moorestech"
+    }
+}
