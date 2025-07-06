@@ -65,7 +65,7 @@ public class Test
         var codeFiles = CodeGenerator.Generate(commandsSchema);
         
         Assert.Equal(16, codeFiles.Count);
-        Assert.Equal(GenerateTestCode.TextCommand, codeFiles.FirstOrDefault(c => c.FileName == "TextCommand.g.cs").Code);
+        Assert.Equal(GenerateTestCode.TextCommandStr, codeFiles.FirstOrDefault(c => c.FileName == "TextCommand.g.cs").Code);
         
         #region Internal
         
@@ -86,6 +86,10 @@ public class Test
                          body:
                            type: string
                            multiline: true
+                         voiceId:
+                           type: string
+                           multiline: true
+                           required: false
                    
                      - id: emote
                        label: エモート
