@@ -14,11 +14,11 @@
         <DevelopmentDependency>true</DevelopmentDependency>
         <IncludeSymbols>false</IncludeSymbols>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-        
+
         <!-- NuGet Package Metadata -->
         <Title>CommandForge Generator</Title>
         <Authors>Moorestech</Authors>
-        <Version>1.0.5</Version>
+        <Version>1.0.8</Version>
         <Description>CommandForgeEditorのcommands.yamlのC#コードを生成するSourceGenerator</Description>
         <PackageProjectUrl>https://github.com/moorestech/CommandForgeGenerator</PackageProjectUrl>
         <RepositoryUrl>https://github.com/moorestech/CommandForgeGenerator</RepositoryUrl>
@@ -37,10 +37,6 @@
         </PackageReference>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0"/>
-        <PackageReference Include="UnitGenerator" Version="1.6.2" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
