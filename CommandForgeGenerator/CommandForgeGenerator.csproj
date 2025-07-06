@@ -18,7 +18,7 @@
         <!-- NuGet Package Metadata -->
         <Title>CommandForge Generator</Title>
         <Authors>Moorestech</Authors>
-        <Version>1.0.5</Version>
+        <Version>1.0.7</Version>
         <Description>CommandForgeEditorのcommands.yamlのC#コードを生成するSourceGenerator</Description>
         <PackageProjectUrl>https://github.com/moorestech/CommandForgeGenerator</PackageProjectUrl>
         <RepositoryUrl>https://github.com/moorestech/CommandForgeGenerator</RepositoryUrl>

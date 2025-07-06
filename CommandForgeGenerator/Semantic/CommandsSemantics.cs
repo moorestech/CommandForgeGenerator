@@ -28,15 +28,13 @@ public class CommandSemantics
 public class CommandProperty{
     public readonly string Name;
     public readonly CommandPropertyType Type;
-    public readonly bool IsRequired;
     
     public string CodeProperty => Name.ToUpper(0);
 
-    public CommandProperty(CommandPropertyType type, string name, bool isRequired)
+    public CommandProperty(CommandPropertyType type, string name)
     {
         Type = type;
         Name = name;
-        IsRequired = isRequired;
     }
 
 }
