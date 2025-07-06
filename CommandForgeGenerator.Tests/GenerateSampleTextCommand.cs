@@ -6,29 +6,32 @@ namespace CommandForgeGenerator.Command
         public const string Type = "text";
         public readonly CommandId CommandId;
         
-        public readonly string Character;
-        public readonly string? Body;
-        public readonly string? VoiceId;
+        public readonly string CharacterId;
+        public readonly bool IsOverrideCharacterName;
+        public readonly string? OverrideCharacterName;
+        public readonly string Body;
         
   
         public static TextCommand Create(int commandId, global::Newtonsoft.Json.Linq.JToken json)
         {
             
-            var Character = (string)json["character"];
-            var Body = json["body"] == null ? null : (string)json["body"];
-            var VoiceId = json["voiceId"] == null ? null : (string)json["voiceId"];
+            var CharacterId = (string)json["characterId"];
+            var IsOverrideCharacterName = (bool)json["isOverrideCharacterName"];
+            var OverrideCharacterName = json["overrideCharacterName"] == null ? null : (string)json["overrideCharacterName"];
+            var Body = (string)json["body"];
             
             
-            return new TextCommand(commandId, Character, Body, VoiceId);
+            return new TextCommand(commandId, CharacterId, IsOverrideCharacterName, OverrideCharacterName, Body);
         }
         
-        public TextCommand(int commandId, string Character, string? Body, string? VoiceId)
+        public TextCommand(int commandId, string CharacterId, bool IsOverrideCharacterName, string? OverrideCharacterName, string Body)
         {
             CommandId = (CommandId)commandId;
             
-        this.Character = Character;
+        this.CharacterId = CharacterId;
+        this.IsOverrideCharacterName = IsOverrideCharacterName;
+        this.OverrideCharacterName = OverrideCharacterName;
         this.Body = Body;
-        this.VoiceId = VoiceId;
         
         }
     }

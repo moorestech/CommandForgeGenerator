@@ -6,4 +6,5 @@ public class GenerateTestCode
 {
     // プロジェクトファイルに存在する GenerateSampleTextCommand.cs を取得する
     public static string TextCommandStr => File.ReadAllText("../../../GenerateSampleTextCommand.cs");
+    public static string YamlFileStr => File.ReadAllText("../../../sampleCommands.yaml");
 }
