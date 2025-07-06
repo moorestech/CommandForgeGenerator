@@ -5,5 +5,5 @@ namespace CommandForgeGenerator.Tests;
 public class GenerateTestCode
 {
     // プロジェクトファイルに存在する GenerateSampleTextCommand.cs を取得する
-    public static string TextCommandStr => File.ReadAllText("../../../CommandForgeGenerator.Tests/GenerateSampleTextCommand.cs");
+    public static string TextCommandStr => File.ReadAllText("../../../GenerateSampleTextCommand.cs");
 }

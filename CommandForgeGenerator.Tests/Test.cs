@@ -86,7 +86,6 @@ public class Test
                          body:
                            type: string
                            multiline: true
-                           required: true
                    
                      - id: emote
                        label: エモート
