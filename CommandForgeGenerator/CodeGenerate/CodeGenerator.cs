@@ -156,39 +156,42 @@ public static class CodeGenerator
             else
             {
                 // nullable の場合はnullチェックを追加
-                properties.AppendLine($"var {property.CodeProperty}Token = json[\"{property.Name}\"];");
-                
-                if (property.Type is CommandPropertyType.CommandId)
+                if (property.Type is CommandPropertyType.String)
                 {
-                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : (CommandId?)((int){property.CodeProperty}Token);");
+                    properties.AppendLine($"var {property.CodeProperty} = json[\"{property.Name}\"] == null ? null : (string)json[\"{property.Name}\"];");
+                }
+                else if (property.Type is CommandPropertyType.CommandId)
+                {
+                    properties.AppendLine($"var {property.CodeProperty} = json[\"{property.Name}\"] == null ? null : (CommandId?)((int)json[\"{property.Name}\"]);");
                 }
                 else if (property.Type is CommandPropertyType.Vector2)
                 {
-                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector2((float){property.CodeProperty}Token[0], (float){property.CodeProperty}Token[1]);");
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = {property.CodeProperty}Array == null ? null : new global::UnityEngine.Vector2((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1]);");
                 }
                 else if (property.Type is CommandPropertyType.Vector3)
                 {
-                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector3((float){property.CodeProperty}Token[0], (float){property.CodeProperty}Token[1], (float){property.CodeProperty}Token[2]);");
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = {property.CodeProperty}Array == null ? null : new global::UnityEngine.Vector3((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1], (float){property.CodeProperty}Array[2]);");
                 }
                 else if (property.Type is CommandPropertyType.Vector4)
                 {
-                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector4((float){property.CodeProperty}Token[0], (float){property.CodeProperty}Token[1], (float){property.CodeProperty}Token[2], (float){property.CodeProperty}Token[3]);");
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = {property.CodeProperty}Array == null ? null : new global::UnityEngine.Vector4((float){property.CodeProperty}Array[0], (float){property.CodeProperty}Array[1], (float){property.CodeProperty}Array[2], (float){property.CodeProperty}Array[3]);");
                 }
                 else if (property.Type is CommandPropertyType.Vector2Int)
                 {
-                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector2Int((int){property.CodeProperty}Token[0], (int){property.CodeProperty}Token[1]);");
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = {property.CodeProperty}Array == null ? null : new global::UnityEngine.Vector2Int((int){property.CodeProperty}Array[0], (int){property.CodeProperty}Array[1]);");
                 }
                 else if (property.Type is CommandPropertyType.Vector3Int)
                 {
-                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : new global::UnityEngine.Vector3Int((int){property.CodeProperty}Token[0], (int){property.CodeProperty}Token[1], (int){property.CodeProperty}Token[2]);");
-                }
-                else if (property.Type is CommandPropertyType.String)
-                {
-                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : (string?){property.CodeProperty}Token;");
+                    properties.AppendLine($"var {property.CodeProperty}Array = json[\"{property.Name}\"];");
+                    properties.AppendLine($"var {property.CodeProperty} = {property.CodeProperty}Array == null ? null : new global::UnityEngine.Vector3Int((int){property.CodeProperty}Array[0], (int){property.CodeProperty}Array[1], (int){property.CodeProperty}Array[2]);");
                 }
                 else
                 {
-                    properties.AppendLine($"{type} {property.CodeProperty} = {property.CodeProperty}Token?.Type == global::Newtonsoft.Json.Linq.JTokenType.Null ? null : ({type}){property.CodeProperty}Token;");
+                    properties.AppendLine($"var {property.CodeProperty} = json[\"{property.Name}\"] == null ? null : ({type})json[\"{property.Name}\"];");
                 }
             }
         }

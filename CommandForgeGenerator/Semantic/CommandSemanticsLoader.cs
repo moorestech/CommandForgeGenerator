@@ -90,11 +90,20 @@ public class CommandSemanticsLoader
                         _ => throw new Exception($"未知の property type \"{typeStr}\"")
                     };
                     
-                    // required フィールドを読み取る
-                    var isRequired = true;
-                    if (propObj.Nodes.ContainsKey("required") && propObj["required"] is JsonBoolean requiredNode)
+                    // required フィールドを読み取る（デフォルトはfalse）
+                    var isRequired = false;
+                    if (propObj.Nodes.ContainsKey("required"))
                     {
-                        isRequired = requiredNode.Literal;
+                        var requiredVal = propObj["required"];
+                        if (requiredVal is JsonBoolean requiredBool)
+                        {
+                            isRequired = requiredBool.Literal;
+                        }
+                        else if (requiredVal is JsonString requiredStr)
+                        {
+                            // YAMLが文字列としてbooleanを返す場合がある
+                            isRequired = requiredStr.Literal.ToLowerInvariant() == "true";
+                        }
                     }
                     
                     properties.Add(new CommandProperty(mappedType, propName, isRequired));
