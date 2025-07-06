@@ -86,6 +86,10 @@ public class Test
                          body:
                            type: string
                            multiline: true
+                         voiceId:
+                           type: string
+                           multiline: true
+                           required: false
                    
                      - id: emote
                        label: エモート
